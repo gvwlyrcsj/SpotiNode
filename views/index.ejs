@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify-like Music Uploads</title>
+</head>
+<body>
+    <style>
+        * {
+    margin: 0px 20px 0px 0px;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    background-color: #f0f0f0;
+}
+
+.album-cover {
+    margin-left: 90px;
+}
+
+nav {
+    width: 200px;
+    height: 800px;
+    background-color: #282c34;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+nav h1 {
+    margin: 0;
+    font-size: 1.5em;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px;
+}
+
+.album-cover img {
+    width: 350px;
+    height: 350px;
+    border-radius: 50%;
+    animation: rotate 10s linear infinite;
+}
+
+@keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.upload-form {
+    margin: 20px 0px 0px 100px;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 500px;
+}
+
+.personal-hits {
+    width: 500px; 
+    margin-left: 50px; 
+}
+
+h2 {
+    text-align: center;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 10px 0;
+    background: white;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.song-details {
+    display: flex;
+    align-items: center;
+}
+
+.song-details img {
+    width: 60px;
+    height: 60px;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.song-actions {
+    display: flex;
+    gap: 10px;
+}
+
+button {
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+form {
+    display: inline;
+}
+    </style>
+    <nav>
+        <h1>SpotiNode</h1>
+    </nav>
+
+    <div class="container">
+        <br>
+        <div class="album-cover text-center">
+            <% if (songs.length > 0 && songs[0].album_cover) { %>
+                <img src="<%= songs[0].album_cover %>" alt="Album Cover" class="img-fluid">
+            <% } else { %>
+                <img src="https://via.placeholder.com/300?text=My+Personal+Hits" alt="My Favorites" class="img-fluid">
+            <% } %>
+        </div>
+        
+        <div class="upload-form">
+            <h1>Upload Your Music</h1><br>
+            <form action="/upload" method="POST" enctype="multipart/form-data">
+                <label for="uploaderName">Title:</label><br>
+                <input type="text" name="uploaderName" id="uploaderName" required>
+                <br><br>
+                <label for="mp3file">MP3 File:</label><br>
+                <input type="file" name="mp3file" id="mp3file" accept="audio/mp3" required>
+                <br><br>
+                <label for="albumCover">Album Cover:</label><br>
+                <input type="file" name="albumCover" id="albumCover" accept="image/*">
+                <br><br>
+                <button type="submit">Upload</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="personal-hits">
+        <br><br>
+        <h2>My Favorites</h2>
+        <ul>
+            <% songs.forEach(song => { %>
+                <li>
+                    <div class="song-details">
+                        <% if (song.album_cover) { %>
+                            <img src="<%= song.album_cover %>" alt="Album Cover">
+                        <% } else { %>
+                            <img src="https://via.placeholder.com/60?text=No+Cover" alt="No Album Cover">
+                        <% } %>
+                        <p><strong><%= song.uploader_name || 'Unknown Artist' %></strong></p>
+                    </div>
+
+                    <div class="song-actions">
+                        <a href="/player/<%= song.id %>">
+                            <button>PLAY</button>
+                        </a>
+                    </div>
+                </li>
+            <% }) %>
+        </ul>
+    </div>
+</body>
+</html>
